@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Actor count</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for model in models %}
+                    <tr>
+                        <th scope="row">{{ model.0.id }}</th>
+                        <td>{{ model.0.name }}</td>
+                        <td>{{ model.1 }}</td>
+                        <td>Nothing implemented (e.g. Stop)</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

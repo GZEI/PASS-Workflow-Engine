@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>Edit actor {{ model.display_name }}</h1>
+    <form action="/sbpm/actor/{{ model.id }}/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button type="submit" class="btn btn-primary">
+            Save!
+        </button>
+    </form>
+{% endblock content %}

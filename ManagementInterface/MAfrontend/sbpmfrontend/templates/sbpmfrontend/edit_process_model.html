@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load crispy_forms_tags %}
+    <div class="row">
+        <div class="col-sm">
+            <h1>Edit a model: {{ model.name }}</h1>
+        </div>
+
+    </div>
+    {% if user.is_superuser %}
+        <div class="row">
+            <div class="col-sm">
+                <form action="/sbpm/model/{{ model.id }}/" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form | crispy }}
+                    <button type="submit" class="btn btn-primary">
+                        Save!
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+    {% if model.sbpmactor_set %}
+        {% if user.is_superuser %}
+            <h2>Edit Actors: </h2>
+            <div class="row">
+                <div class="col-sm">
+                    <ul>
+                        {% for model in model.sbpmactor_set.all %}
+                            <li><a href="/sbpm/actor/{{ model.id }}">{{ model.display_name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm">
+                    <a target=""
+                       class="btn btn-info"
+                       href="/sbpm/load/{{ model.id }}/">
+                        Deploy model
+                    </a>
+                </div>
+                <div class="col-sm">
+                    <a target=""
+                       class="btn btn-info"
+                       href="/sbpm/recompile/{{ model.id }}/">
+                        Recompile model!
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+        {% if can_start %}
+        <div class="col-sm">
+            <form action="/sbpm/start/{{ model.id }}/" method="GET" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ start_instance_form | crispy }}
+                <button type="submit" class="btn btn-primary">
+                    Start model!
+                </button>
+            </form>
+        </div>
+            {% endif %}
+    {% else %}
+        <p>No models are available.</p>
+    {% endif %}
+</div>
+{% endblock content %}

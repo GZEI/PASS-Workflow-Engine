@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load crispy_forms_tags %}
+    <h1>User interaction: {{ io_name }}</h1>
+    <div class="row">
+        {% for key,value in io_read.items %}
+            {% if value.value != None %}
+                <div class="card-body">
+                    {{ value.display_name }}: {{ value.value }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <h2>Enter data</h2>
+    <form action="/sbpm/enterdata/{{ id }}/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button type="submit" class="btn btn-primary">
+            Save!
+        </button>
+    </form>
+{% endblock content %}

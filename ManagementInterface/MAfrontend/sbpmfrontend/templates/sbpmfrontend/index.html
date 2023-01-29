@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="row">
+            <div class="col-sm">
+                {% if model_list %}
+                    <ul>
+                        {% for model in model_list %}
+                            <li><a href="/sbpm/model/{{ model.id }}">{{ model.file_name }}: {{ model.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No models are available.</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="row">
+            {% if user.is_superuser %}
+                <div class="col-sm">
+                    <a href="/sbpm/upload" class="btn btn-info">Upload a new model</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2>Waiting IO Requests</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <ul>
+                    {% for request in pending_io_requests %}
+                        <li>
+                            <a href="/sbpm/enterdata/{{ request.requestID }}">{{ request.process_instance.name }}: {{ request.actor.display_name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            {% if user.is_superuser %}
+                <div class="col-sm">
+                    <a href="/sbpm/manage/">Manage instances</a>
+                </div>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">Log In</a>
+    {% endif %}
+{% endblock content %}
