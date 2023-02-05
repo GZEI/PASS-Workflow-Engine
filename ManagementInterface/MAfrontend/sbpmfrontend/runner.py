@@ -91,6 +91,7 @@ def startSource(start_actor, hash, payload):
         ioActor = actorSystemManager.getIOActor()
         payload["director"] = myDirector
         payload["ioactor"] = ioActor
+        payload["addressbook"] = dict()
         tmp = asys.ask(myDirector, mydirector.StartSource(hash, start_actor, payload))
         if tmp != 0:
             print(tmp)

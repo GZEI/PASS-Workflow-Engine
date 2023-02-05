@@ -220,7 +220,13 @@ with onto:
                    '\n\tdef __init__(self, content):' \
                    '\n\t\tself.content = content' \
                    '\n\tdef __str__(self):' \
+                   '\n\t\treturn str(self.content)' \
+                   f'\nclass {sanitizeID(self.hasModelComponentID[0])}_res:' \
+                   '\n\tdef __init__(self, content):' \
+                   '\n\t\tself.content = content' \
+                   '\n\tdef __str__(self):' \
                    '\n\t\treturn str(self.content)'
+
 
         def getPythonFunctionDefinitionString(self, offset=""):
             possible_states = list()
@@ -264,6 +270,8 @@ with onto:
                 f'\n\t\tself.instance_id = message.get("instance_id")'
                 f'\n\t\tself.director = message.get("director")'
                 f'\n\t\tself.ioactor = message.get("ioactor")'
+                f'\n\t\tself.known_actors = message.get("addressbook")'
+                f'\n\t\tself.known_actors[self.subjectName] = [self.myAddress]'
                 f'\n\t\tself.new_actor_payload = message'
                 f'\n\t\tself.send(self.director, {{"register": self.instance_id, "subject_name": self.subjectName}})'
                 f'\n\t\tself.allowed_states.append("{sanitizeID(self.hasModelComponentID[0])}")')
@@ -456,6 +464,7 @@ with onto:
                 f'\n{offset}\treturn'
                 f'\n{offset}if "{otherActor}" not in self.known_actors:'
                 f'\n{offset}\tif self.{otherActor.lower()} is None:'
+                f'\n{offset}\t\tself.new_actor_payload["addressbook"] = self.known_actors'
                 f'\n{offset}\t\tself.{otherActor.lower()} = self.createActor({otherActor.lower()}.{otherActor})'
                 f'\n{offset}\t\tself.send(self.{otherActor.lower()}, self.new_actor_payload)'
                 f'\n{offset}else:'
