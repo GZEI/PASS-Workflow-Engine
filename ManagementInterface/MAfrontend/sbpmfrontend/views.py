@@ -43,7 +43,7 @@ class DynamicFormUserInput(forms.Form):
 
 
 class UploadForm(forms.Form):
-    file = forms.FileField()
+    file = forms.FileField(widget=forms.FileInput(attrs={'accept':'.owl'}))
     name = forms.CharField(max_length=128)
 
 
