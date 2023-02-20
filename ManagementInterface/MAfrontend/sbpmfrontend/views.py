@@ -43,7 +43,7 @@ class DynamicFormUserInput(forms.Form):
 
 
 class UploadForm(forms.Form):
-    file = forms.FileField(widget=forms.FileInput(attrs={'accept':'.owl'}))
+    file = forms.FileField(widget=forms.FileInput(attrs={'accept': '.owl'}))
     name = forms.CharField(max_length=128)
 
 
@@ -81,7 +81,11 @@ def index(request):
     template = loader.get_template("sbpmfrontend/index.html")
     pending_requests = list()
     if request.user.is_authenticated:
-        pending_requests_raw = ask_pending_requests()
+        try:
+            pending_requests_raw = ask_pending_requests()
+        except Exception as e:
+            return HttpResponse(
+                "A error occured, please make sure the server is started and then restart this application!")
         for k, v in pending_requests_raw.items():
             allowed_actors = SbpmActor.objects.filter(executed_by=request.user)
             actor = SbpmActor.objects.filter(process_model_id=v.get('model_id'))
@@ -170,7 +174,11 @@ def response_user_interaction(request, iorequest_id):
 
 
 def enter_data(request, iorequest_id):
-    io_request = ask_pending_requests().get(iorequest_id)
+    try:
+        io_request = ask_pending_requests().get(iorequest_id)
+    except Exception as e:
+        return HttpResponse(
+            "A error occured, please make sure the server is started and then restart this application!")
     if io_request is None:
         return HttpResponseNotFound("IO Request not found")
     json_data_dict = io_request
@@ -232,7 +240,11 @@ def recompile(request, process_model_id):
 
 
 def manage_running(request):
-    dict_of_hashes = ask_running_actors()
+    try:
+        dict_of_hashes = ask_running_actors()
+    except Exception as e:
+        return HttpResponse(
+            "A error occured, please make sure the server is started and then restart this application!")
     display_list = []
     for i in dict_of_hashes.keys():
         display_list.append((get_object_or_404(ProcessInstance, pk=i), dict_of_hashes[i].get("cnt")))

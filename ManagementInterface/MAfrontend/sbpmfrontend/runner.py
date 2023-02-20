@@ -1,7 +1,6 @@
-from thespian.actors import *
-
 import myIOActor
 import mydirector
+from thespian.actors import *
 
 
 class SimpleSourceAuthority(Actor):
@@ -23,6 +22,7 @@ class ActorSystemManager:
     __asys = None
     __director = None
     __ioactor = None
+    __ready = False
 
     @staticmethod
     def getInstance():
@@ -46,14 +46,19 @@ class ActorSystemManager:
             asys = ActorSystem('multiprocTCPBase', capabilities)
             sa = asys.createActor(SimpleSourceAuthority)
             asys.tell(sa, True)
+            self.__asys = asys
             self.__ioactor = asys.createActor(myIOActor.MyIOActor, globalName="MyIOActor")
             self.__director = asys.createActor(mydirector.MyDirector, globalName="MyDirector")
-            self.__asys = asys
+            self.__ready = True
+        elif not self.__ready:
+            self.__asys.shutdown()
+            self.__asys = None
         return self.__asys
 
     def stopActorSystem(self):
         self.startActorSystem()
         self.__asys.shutdown()
+        self.__asys = None
 
     def getIOActor(self):
         return self.__ioactor
@@ -107,9 +112,14 @@ def ask_running_actors():
         actorSystemManager = ActorSystemManager.getInstance()
         asys = actorSystemManager.startActorSystem()
         myDirector = actorSystemManager.getDirector()
-        return asys.ask(myDirector, "list")
+        running_actors = asys.ask(myDirector, "list")
+        if running_actors is None:
+            actorSystemManager.stopActorSystem()
+            return dict()
+        return running_actors
     except Exception as e:
-        raise Exception(str(e))
+        actorSystemManager.stopActorSystem()
+        raise Exception("Server not available, please check!")
 
 
 def ask_pending_requests():
@@ -118,9 +128,14 @@ def ask_pending_requests():
         actorSystemManager = ActorSystemManager.getInstance()
         asys = actorSystemManager.startActorSystem()
         ioActor = actorSystemManager.getIOActor()
-        return asys.ask(ioActor, myIOActor.ListRequest("None"))
+        pending_requests = asys.ask(ioActor, myIOActor.ListRequest("None"))
+        if pending_requests is None:
+            actorSystemManager.stopActorSystem()
+            return dict()
+        return pending_requests
     except Exception as e:
-        raise Exception(str(e))
+        actorSystemManager.stopActorSystem()
+        raise Exception("Server not available, please check!")
 
 
 def respond_pending_request(payload):

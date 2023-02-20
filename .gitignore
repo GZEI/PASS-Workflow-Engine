@@ -1,0 +1,8 @@
+.idea/.gitignore
+.idea/PASS-Workflow-Engine.iml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+Server/__pycache__/myIOActor.cpython-310.pyc
+Server/__pycache__/mydirector.cpython-310.pyc
