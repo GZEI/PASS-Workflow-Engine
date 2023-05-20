@@ -1,6 +1,6 @@
 # Code generator based workflow engine for PASS models
 
-This prototype aims to execute PASS models. 
+This prototype aims to execute PASS models and was developed as part of a Masters Thesis.
 Currently the supported elements are:
 - FullySpecifiedSubjects
 - Messages without priorities
